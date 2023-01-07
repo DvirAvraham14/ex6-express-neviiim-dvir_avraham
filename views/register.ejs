@@ -1,0 +1,59 @@
+<%- include('./include/head.ejs') %>
+<!-- Navbar -->
+<%- include('./include/navbar.ejs') %>
+
+<main class="vh-100" style="background-color: #eae9e9;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card" style="border-radius: 1rem;">
+          <div class="row g-0">
+            <div class="col-md-6 col-lg-5 d-none d-md-block">
+              <img src="/images/nasa-logo-web-rgb.png"
+                   alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+            </div>
+            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+              <div class="card-body p-4 p-lg-5 text-black">
+
+                <form action="/register/step1/" method="POST">
+                  <div class="d-flex align-items-center mb-3 pb-1">
+                    <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+                    <span class="h1 fw-bold mb-0">SpaceBook Register:</span>
+                  </div>
+                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Regiser new account:</h5>
+                  <div class="form-outline mb-4">
+                    <input required type="text" id="firstName" name="firstName"
+                           value="<%=  formData.firstName || ' ' %>"
+                           class="form-control form-control-lg"
+                           minlength="3" maxlength="32"/>
+                    <label class="form-label" for="firstName">First name</label>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <input required type="text" id="lastName" name="lastName" value="<%= formData.lastName || ' '  %>"
+                           class="form-control form-control-lg" minlength="3" maxlength="32" />
+                    <label class="form-label" for="lastName">Last Name</label>
+                  </div>
+                  <div class="form-outline mb-4">
+                    <input required type="email" id="emailField" name="emailField" value="<%= formData.emailField || ' ' %>"
+                           minlength="3" maxlength="32" class="form-control form-control-lg" />
+                    <label class="form-label" for="emailField">Email address</label>
+                  </div>
+                  <% if(error) { %>
+                    <div class="alert alert-danger" role="alert"><%= error_message %></div>
+                  <% } %>
+                  <div class="pt-1 mb-4">
+                    <button class="btn btn-dark btn-lg btn-block" id="register" type="submit">Register!</button>
+                  </div>
+
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- Footer -->
+<%- include('./include/footer.ejs') %>
