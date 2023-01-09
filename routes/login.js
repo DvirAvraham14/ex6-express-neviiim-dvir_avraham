@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const Users = require("../models/Register")
-const func  = require("../models/funcs")
+const db = require("../models");
+const func  = require("../controller/funcs")
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -10,19 +10,19 @@ router.get('/', function(req, res, next) {
 });
 
 router.post(`/`, (req, res) => {
-  const email = req.body.emailField;
-  const pass = req.body.pass;
-  const loginName = Users.login(email, pass)
-  if(loginName !== false){
-      req.session.loginName = loginName;
-      req.session.log = true;
-      res.redirect("/")
-  }else{
-      func.set_error(res, false,"One of the field`s incorrect");
-      res.redirect("/")
-  }
+  const email = req.body.email;
+  const pass = req.body.password;
+    db.User.findOne({where: {email: email, password: pass}}).then((respone) =>{
+      if(respone !== null){
+          req.session.loginName = `${respone.firstName} ${respone.lastName}`;
+          req.session.log = true;
+          res.redirect("/")
+      }else{
+          func.set_error(res, false,"One of the field`s incorrect");
+          res.redirect("/")
+        }
+  }).catch(err => console.log(err))
 })
-
 
 
 module.exports = router;
