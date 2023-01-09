@@ -18,7 +18,7 @@ router.post(`/`, (req, res) => {
       req.session.log = true;
       res.redirect("/")
   }else{
-      func.set_error(req, "One of the field`s incorrect", true);
+      func.set_error(res, false,"One of the field`s incorrect");
       res.redirect("/")
   }
 })

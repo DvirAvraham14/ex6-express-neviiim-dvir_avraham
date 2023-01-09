@@ -19,7 +19,7 @@ module.exports = (function() {
     }
 
     function mailExsists(mail){
-        let index = users.findIndex((item) => item.email === mail);
+        let index = users.findIndex((item) => item.email.toLowerCase() === mail.toLowerCase());
         if(index === -1)
             return false
         return true

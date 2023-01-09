@@ -32,8 +32,8 @@
                     <input type="password" id="pass"  name="pass" class="form-control form-control-lg" />
                     <label class="form-label" for="pass">Password</label>
                   </div>
-                  <% if(error) { %>
-                    <div class="alert alert-danger" role="alert"><%= error_message %></div>
+                  <% if(error.error_message) { %>
+                    <div class="alert <%= error.error_type ? 'alert-success': 'alert-danger' %>" role="alert"><%= error.error_message %></div>
                   <% } %>
                   <div class="pt-1 mb-4">
                     <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>

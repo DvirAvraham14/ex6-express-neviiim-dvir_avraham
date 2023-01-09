@@ -22,11 +22,11 @@ router.get('/', function(req, res, next) {
 
 router.post('/step1/', (req, res, next) => {
     try {
-        let firstName = req.body.firstName;
-        let lastName = req.body.lastName;
-        let emailField = req.body.emailField;
-        if (Register.mailExsists(emailField)) {
-            func.set_error(req, "the email you choose already in use.", true);
+        let firstName = req.body.firstName.trim();
+        let lastName = req.body.lastName.trim();
+        let emailField = req.body.emailField.trim();
+        if (!req.body.emailField || Register.mailExsists(emailField)) {
+            func.set_error(res, false, "the email you choose already in use.");
             res.redirect('/register/');
         }else {
             res.cookie('formData', {firstName, lastName, emailField}, {maxAge: 30000});
@@ -48,23 +48,24 @@ router.get('/step2', function(req, res, next) {
 router.post('/validate/', (req, res, next) => {
     let formData = {};
     if(!req.cookies.formData){
-        func.set_error(req, "Your session expired", true);
+        func.set_error(res, false, "Your session expired");
         res.redirect('/register/');
     }else if(req.body.pass !== req.body.confPass) {
-        func.set_error(req, "the password`s don`t match!.", true);
+        func.set_error(res, false, "the password`s don`t match!.");
         res.redirect('../step2/');
     }else if(req.body.pass === '' || req.body.passCond === '') {
-        func.set_error(req, "All the field`s required", true);
+        func.set_error(res, false,"All the field`s required");
         res.redirect('../step2/');
     }else {
         formData = req.cookies.formData;
         const user = new User(formData.firstName, formData.lastName, formData.emailField, req.body.pass)
         if(Register.addUser(user)){
-            func.clearTemp(res); // delete to cookie that storage the field`s data
+            res.clearCookie("formData");
+            func.set_error(res, true, "success registered");
             res.redirect('/');
         }else{
-            func.set_error(req, "The mail you choose already registered", true);
-            func.clearTemp(res); // delete to cookie that storage the field`s data
+            func.set_error(res, false, "The mail you choose already registered");
+            res.clearCookie("formData");
             res.redirect('/register')
         }
     }

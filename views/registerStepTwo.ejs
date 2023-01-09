@@ -30,8 +30,8 @@
                            minlength="3" maxlength="32" required/>
                     <label class="form-label" for="confPass">Confirm password</label>
                   </div>
-                  <% if (error) { %>
-                    <div class="alert alert-danger" role="alert"><%= error_message %></div>
+                  <% if(error.error_message) { %>
+                    <div class="alert <%= error.error_type ? 'alert-success': 'alert-danger' %>" role="alert"><%= error.error_message %></div>
                   <% } %>
                   <div class="btn-group pt-1 mb-4" role="group">
                     <button class="btn btn-dark btn-lg" type="submit">Register!</button>

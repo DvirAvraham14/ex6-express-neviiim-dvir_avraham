@@ -11,5 +11,4 @@ const register = function () {
 
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("back-button").addEventListener("click", register.goBack);
-    console.log("sss")
 });

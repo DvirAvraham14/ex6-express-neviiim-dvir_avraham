@@ -37,8 +37,8 @@ app.use((req,res, next) => {
     req.session.log = false;
     req.session.loginName = false;
   }
-  res.locals.error = req.session?.error || false;
-  res.locals.error_message = req.session?.error_message || '';
+  res.locals.error =  req.cookies.error || {error_message : false};
+  res.clearCookie("error");
   res.locals.log = req.session.log;
   res.locals.loginName = req.session.loginName
   req.session.error = false;
