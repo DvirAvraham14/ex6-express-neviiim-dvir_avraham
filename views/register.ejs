@@ -1,8 +1,12 @@
 <%- include('./include/head.ejs') %>
 <!-- Navbar -->
 <%- include('./include/navbar.ejs') %>
-
-<main class="vh-100" style="background-color: #eae9e9;">
+<style>
+  body {
+    background-color: #eae9e9;
+  }
+</style>
+<main class="vh-100">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-xl-10">
@@ -23,18 +27,18 @@
                   <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Regiser new account:</h5>
                   <div class="form-outline mb-4">
                     <input required type="text" id="firstName" name="firstName"
-                           value="<%=  formData.firstName || ' ' %>"
+                           value="<%=  formData.firstName || '' %>"
                            class="form-control form-control-lg"
                            minlength="3" maxlength="32"/>
                     <label class="form-label" for="firstName">First name</label>
                   </div>
                   <div class="form-outline mb-4">
-                    <input required type="text" id="lastName" name="lastName" value="<%= formData.lastName || ' '  %>"
+                    <input required type="text" id="lastName" name="lastName" value="<%= formData.lastName || ''  %>"
                            class="form-control form-control-lg" minlength="3" maxlength="32" />
                     <label class="form-label" for="lastName">Last Name</label>
                   </div>
                   <div class="form-outline mb-4">
-                    <input required type="text" id="email" name="email" value="<%= formData.email || ' ' %>"
+                    <input required type="email" id="email" name="email" value="<%= formData.email || '' %>"
                            minlength="3" maxlength="32" class="form-control form-control-lg" />
                     <label class="form-label" for="emailField">Email address</label>
                   </div>

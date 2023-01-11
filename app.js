@@ -33,6 +33,13 @@ app.use(session({
   cookie: { maxAge: 10 * 60 * 1000 }
 }));
 
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
+  res.set('Expires', '-1')
+  res.set('Pragma', 'no-cache')
+  next()
+})
+
 app.use((req,res, next) => {
   if(!req.session.log) {
     req.session.log = false;
