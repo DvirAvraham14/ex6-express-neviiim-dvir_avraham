@@ -1,11 +1,11 @@
 let express = require('express');
 let router = express.Router();
+const db = require("../models");
+const Sequelize = require('sequelize');
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  if(!req.session.log)
-    res.render('login', { title: 'Express'});
-  else
     res.render('index', { title: 'Express' });
 });
 
@@ -16,5 +16,13 @@ router.get('/logout/', function(req, res, next) {
        delete req.session.log
     res.redirect('/');
 });
+
+router.post("/addComment", (req,res,next) => {
+    const {pic_date, comment} = req.body;
+    const user_id = req.session.log;
+    db.Comment.create({user_id : user_id, comment: comment, pic_date: pic_date}).then((r) => {
+        console.log("Success")
+    }).catch(e => console.log(e))
+})
 
 module.exports = router;

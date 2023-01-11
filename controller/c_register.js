@@ -1,6 +1,8 @@
 const db = require("../models");
 const func = require("./funcs");
 const Sequelize = require('sequelize');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 exports.renderHome = (req, res, next) => {
     try {
@@ -43,7 +45,7 @@ exports.getStepTwo = (req, res, next) => {
     res.render("registerStepTwo", {title: "register step two"})
 };
 
-exports.postStepTwo = (req, res, next) => {
+exports.postStepTwo = async (req, res, next) => {
     let formData = {};
     if(!req.cookies.formData){
         func.set_error(res, false, "Your session expired");
@@ -56,7 +58,7 @@ exports.postStepTwo = (req, res, next) => {
         res.redirect('../step2/');
     }else {
         const {firstName, lastName, email} = req.cookies.formData;
-        const password = req.body.password
+        const password = await bcrypt.hash(req.body.password, saltRounds);
         let u = db.User.build({firstName,lastName,email, password});
         return u.save()
             .then((contact) => {

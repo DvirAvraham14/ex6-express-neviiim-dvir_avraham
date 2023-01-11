@@ -5,18 +5,17 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 
+// Import the different route handlers
 const indexRouter = require('./routes/index');
 const loginRouter = require('./routes/login');
 const registerRouter = require('./routes/register');
 const apiRouter = require('./routes/reset_api');
-
 
 const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -25,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// enable sessions
+// Enable sessions
 app.use(session({
   secret: "somesecretkey",
   resave: false,
@@ -33,18 +32,21 @@ app.use(session({
   cookie: { maxAge: 10 * 60 * 1000 }
 }));
 
+// Set cache control headers
 app.use((req, res, next) => {
-  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
-  res.set('Expires', '-1')
-  res.set('Pragma', 'no-cache')
-  next()
-})
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Expires', '-1');
+  res.set('Pragma', 'no-cache');
+  next();
+});
 
+//Initialize login state if not already present in session
 app.use((req,res, next) => {
   if(!req.session.log) {
     req.session.log = false;
     req.session.loginName = false;
   }
+  // Set error cookie to be available to all views
   res.locals.error =  req.cookies.error || {error_message : false};
   res.clearCookie("error");
   res.locals.log = req.session.log;
@@ -53,7 +55,17 @@ app.use((req,res, next) => {
   next();
 })
 
+// Check if the user is logged in and if not, redirect to login page
+app.use((req, res, next) => {
+  // Only allow request path that starts with /login, /register or any routes that come after them
+  if (!req.session.log && !/^\/(login|register)[/a-z]*/.test(req.path)) {
+    res.redirect('/login');
+    return;
+  }
+  next();
+});
 
+// Use the different route handlers for their respective routes
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);

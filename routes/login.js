@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const db = require("../models");
 const func  = require("../controller/funcs")
 
@@ -12,15 +13,17 @@ router.get('/', function(req, res, next) {
 router.post(`/`, (req, res) => {
   const email = req.body.email;
   const pass = req.body.password;
-    db.User.findOne({where: {email: email, password: pass}}).then((respone) =>{
-      if(respone !== null){
-          req.session.loginName = `${respone.firstName} ${respone.lastName}`;
-          req.session.log = true;
-          res.redirect("/")
-      }else{
-          func.set_error(res, false,"One of the field`s incorrect");
-          res.redirect("/")
-        }
+    db.User.findOne({where: {email: email}}).then((user) =>{
+        bcrypt.compare(pass, user.password, (err, result) => {
+            if (result) {
+                req.session.loginName = `${user.firstName} ${user.lastName}`;
+                req.session.log = user.id;
+                res.redirect("/")
+            } else {
+                func.set_error(res, false, "One of the field`s incorrect");
+                res.redirect("/")
+            }
+        })
   }).catch(err => console.log(err))
 })
 
