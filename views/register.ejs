@@ -29,12 +29,13 @@
                     <input required type="text" id="firstName" name="firstName"
                            value="<%=  formData.firstName || '' %>"
                            class="form-control form-control-lg"
-                           minlength="3" maxlength="32"/>
+                           pattern="[A-Za-z]{3,32}"/>
                     <label class="form-label" for="firstName">First name</label>
                   </div>
                   <div class="form-outline mb-4">
                     <input required type="text" id="lastName" name="lastName" value="<%= formData.lastName || ''  %>"
-                           class="form-control form-control-lg" minlength="3" maxlength="32" />
+                           class="form-control form-control-lg"
+                           pattern="[A-Za-z]{3,32}"/>
                     <label class="form-label" for="lastName">Last Name</label>
                   </div>
                   <div class="form-outline mb-4">

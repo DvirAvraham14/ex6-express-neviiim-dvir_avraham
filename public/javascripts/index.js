@@ -114,7 +114,6 @@
                     return response.json();
                 })
                 .then(function (data) {
-                    document.getElementById("loader").classList.add("d-none")
                     if(data["code"] >= 300)
                         throw new Error(`code ${data['code']}, Error: ${data['msg']}`)
                     data = createHtml(data);
@@ -124,6 +123,8 @@
                     });
                 }).catch(function (e) {
                 document.getElementById("main-data").innerHTML = e;
+            }).finally(function () {
+                document.getElementById("loader").classList.add("d-none")
             });
 
 
@@ -155,6 +156,7 @@
          */
         function getComment(id) {
             imgDate = id;
+            document.getElementById("loaderCom").classList.remove("d-none")
             fetch(`api/comments/${imgDate}`).then(function (response) {
                 return response.text();
             }).then(function (data) {
@@ -174,9 +176,11 @@
                 });
             }).catch(function (e) {
                 console.log(e)
-            })
-            clearInterval(intravl);
-            intravl = setTimeout(() => { return getComment(imgDate) }, 15000);
+            }).finally(function () {
+                document.getElementById("loaderCom").classList.add("d-none")
+                clearInterval(intravl);
+                intravl = setTimeout(() => { return getComment(imgDate) }, 15000);
+            });
         }
 
         /**
@@ -197,6 +201,8 @@
 
     /// Main Section
     document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("datePicker").value = connectToAPI.getDate();
+        document.getElementById("datePicker").addEventListener("change", connectToAPI.selectDate);
         document.getElementById("close-modal").addEventListener("click",() => {
             document.getElementById("modal-img").src = "";
             clearInterval(connectDataBase.getIntrval());
