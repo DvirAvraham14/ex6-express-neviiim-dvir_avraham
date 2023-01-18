@@ -55,7 +55,7 @@
                         <div class="form-outline mb-2">
                           <form method="post" action="/addComment/" id="submit-comment">
                             <input type="hidden" value="" id="pic_date" name="pic_date">
-                            <input required type="text" id="comment" name="comment" class="form-control" placeholder="Type comment..." />
+                            <input required type="text" id="comment" name="comment" class="form-control" placeholder="Type comment..." pattern="[\d\w]{1,128}" />
                             <label class="form-label d-done" for="comment"></label>
                             <input type="submit" id="add_comment" class="btn btn-primary btn-sm mt-2" />
                             <input type="reset" class="btn btn-primary btn-sm mt-2" />
