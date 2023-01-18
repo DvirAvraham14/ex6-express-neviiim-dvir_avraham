@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 const db = require("../models");
 const Sequelize = require('sequelize');
+const createError = require("http-errors");
 
 
 /* GET home page. */
@@ -22,7 +23,8 @@ router.post("/addComment", (req,res,next) => {
     const user_id = req.session.log;
     db.Comment.create({user_id : user_id, comment: comment, pic_date: pic_date}).then((r) => {
         console.log("Success")
-    }).catch(e => console.log(e))
+    }).catch(e =>  next(createError(401, e))
+    )
 })
 
 module.exports = router;

@@ -2,8 +2,10 @@
 
 Lior Ezra: liorez@edu.hac.ac.il
 Dvir Avraham: dviravr@edu.hac.ac.il
-terminal commands to do:
 
+
+
+Package to install:
 npm install bcrypt
 npm install sqlite3
 npm install sequelize

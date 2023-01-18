@@ -1,4 +1,5 @@
 let express = require('express');
+const createError = require('http-errors');
 let router = express.Router();
 let db = require("../models");
 
@@ -8,18 +9,14 @@ router.get('/', function(req, res, next) {
     res.status(200).send({msg: "hello from spacebook api"});
 });
 
-/* GET all the users. */
-router.get('/users/', function(req, res, next) {
-    //find all user in the User table with attributes firstName, lastName and email
-    db.User.findAll({attributes: ['id','firstName', 'lastName','email']}).then(response =>
-        // respond with the found users
-        res.status(200).send(response))
-        .catch((e) => console.log(e))
-});
 
 /* GET comments by date. */
 router.get('/comments/:date', function(req, res, next) {
     // find all comments that match the provided date
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(req.params.date)) {
+        next(createError(401, "not valid date"));
+        return;
+    }
     db.Comment.findAll({
         where: {pic_date: req.params.date},
         //select the id, comment, user_id columns
@@ -59,20 +56,29 @@ router.get('/comments/:date', function(req, res, next) {
                     </div>`;
         })
         res.status(200).send(html);
-    }).catch((e) => console.log(e))
+    }).catch((e) => next(createError(401, e)))
 });
 
 // delete comment by its id
 router.post('/comments/del/', function(req, res, next){
     // destroy the comment
-    db.Comment.destroy({where: {id:req.body.todel}})
-        .then((response) => {
-            console.log(response)
-            //if success remove the comment's card from the frontend
-            res.status(200)
+    db.Comment.findOne({where : {id: req.body.todel}})
+        .then(data => {
+            console.log(data["user_id"], req.session.log)
+            if(data["user_id"] == req.session.log){
+                db.Comment.destroy({where: {id:req.body.todel}})
+                    .then((response) => {
+                        //if success remove the comment's card from the frontend
+                        res.status(200)
+                    })
+                    .catch((err) => {
+                        next(createError(401, e))
+                    })
+            }else
+                next(createError(401, "you not allowed to delete that"));
         })
-        .catch((err) => {
-            console.log(err)
+        .catch(e => {
+            next(createError(401, e));
         })
 });
 

@@ -40,20 +40,6 @@ app.use((req, res, next) => {
   next();
 });
 
-//Initialize login state if not already present in session
-app.use((req,res, next) => {
-  if(!req.session.log) {
-    req.session.log = false;
-    req.session.loginName = false;
-  }
-  // Set error cookie to be available to all views
-  res.locals.error =  req.cookies.error || {error_message : false};
-  res.clearCookie("error");
-  res.locals.log = req.session.log;
-  res.locals.loginName = req.session.loginName
-  req.session.error = false;
-  next();
-})
 
 // Check if the user is logged in and if not, redirect to login page
 app.use((req, res, next) => {
@@ -64,6 +50,20 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+
+//Initialize login state if not already present in session
+app.use((req,res, next) => {
+
+  // Set error cookie to be available to all views
+  res.locals.error =  req.cookies.error || {error_message : false};
+  res.clearCookie("error");
+  res.locals.log = req.session.log;
+  res.locals.loginName = req.session.loginName
+  req.session.error = false;
+  next();
+})
+
 
 // Use the different route handlers for their respective routes
 app.use('/', indexRouter);
@@ -81,6 +81,7 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.title = "Error";
 
   // render the error page
   res.status(err.status || 500);

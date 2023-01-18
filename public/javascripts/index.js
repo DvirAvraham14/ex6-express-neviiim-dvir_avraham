@@ -57,7 +57,7 @@
                 document.getElementById('modal-comments-area').style = `height: ${document.getElementById('modal-img').offsetHeight}px;`
 
             }).catch(function (e) {
-                console.log(e);
+                console.error("Error:", e)
             });
         }
         function getCover(elem, height){
@@ -147,40 +147,71 @@
     const connectDataBase = function () {
         let imgDate = ''
         let intravl;
-        let t = 0;
 
         /**
-         * get all comments that belong to specific picture
-         * and refresh the comments every 15 second
-         * @param id
+         * Fetches comments for a specific image and updates the UI with the comments
+         * @param {string} id - The ID of the image
          */
         function getComment(id) {
+            // Save the image ID
             imgDate = id;
-            document.getElementById("loaderCom").classList.remove("d-none")
-            fetch(`api/comments/${imgDate}`).then(function (response) {
-                return response.text();
-            }).then(function (data) {
-                document.getElementById("com").innerHTML = "";
-                document.getElementById("com").innerHTML += data
-                // Select all the delete buttons
-                const deleteButtons = document.querySelectorAll('.deleteForm input[type="submit"]');
-
-                // Iterate over the buttons and add an event listener to each
-                deleteButtons.forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        // Find the closest parent div with the class "card"
-                        const commentBox = event.target.closest('.card');
-                        // Remove the comment box from the DOM
-                        setTimeout(() => {commentBox.remove()},500);
-                    });
+            showLoader();
+            fetchComments(imgDate)
+                .then(updateUIComments)
+                .catch(handleError)
+                .finally(() => {
+                    hideLoader();
+                    clearInterval(intravl);
+                    intravl = setTimeout(() => { return getComment(imgDate) }, 15000);
                 });
-            }).catch(function (e) {
-                console.log(e)
-            }).finally(function () {
-                document.getElementById("loaderCom").classList.add("d-none")
-                clearInterval(intravl);
-                intravl = setTimeout(() => { return getComment(imgDate) }, 15000);
+        }
+
+        /**
+         * Shows the loading spinner
+         */
+        function showLoader() {
+            document.getElementById("loaderCom").classList.remove("d-none");
+        }
+
+        /**
+         * Hides the loading spinner
+         */
+        function hideLoader() {
+            document.getElementById("loaderCom").classList.add("d-none");
+        }
+
+        /**
+         * Fetches comments for a specific image
+         * @param {string} imgDate - The ID of the image
+         * @returns {Promise} - A promise that resolves with the comments
+         */
+        function fetchComments(imgDate) {
+            return fetch(`api/comments/${imgDate}`)
+                .then(response => response.text());
+        }
+
+        /**
+         * Updates the UI with the fetched comments
+         * @param {string} data - The fetched comments
+         */
+        function updateUIComments(data) {
+            document.getElementById("com").innerHTML = "";
+            document.getElementById("com").innerHTML += data;
+            const deleteButtons = document.querySelectorAll('.deleteForm input[type="submit"]');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const commentBox = event.target.closest('.card');
+                    setTimeout(() => {commentBox.remove()},500);
+                });
             });
+        }
+
+        /**
+         * Handles errors when fetching comments
+         * @param {Error} e - The error
+         */
+        function handleError(e) {
+            console.error("Error:", e);
         }
 
         /**
@@ -201,8 +232,9 @@
 
     /// Main Section
     document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("datePicker").value = connectToAPI.getDate();
-        document.getElementById("datePicker").addEventListener("change", connectToAPI.selectDate);
+        const datePicker = document.getElementById("datePicker");
+        datePicker.value = connectToAPI.getDate();
+        datePicker.addEventListener("change", connectToAPI.selectDate);
         document.getElementById("close-modal").addEventListener("click",() => {
             document.getElementById("modal-img").src = "";
             clearInterval(connectDataBase.getIntrval());

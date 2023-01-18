@@ -1,6 +1,24 @@
+<%- include('./include/head.ejs') %>
+<!-- Navbar -->
+<%- include('./include/navbar.ejs') %>
+<main role="main">
 
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+    <section class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">N.A.S.A API Project</h1>
+            <p class="lead">Error!!!</p>
+        </div>
+    </section>
 
+    <div class="album py-5 bg-light">
+        <div class="container">
 
+            <div class="row" id="main-data">
+                <%= error.message %>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<%- include('./include/footer.ejs') %>
