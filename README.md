@@ -9,3 +9,4 @@ Package to install:
 npm install bcrypt
 npm install sqlite3
 npm install sequelize
+npm install connect-session-sequelize

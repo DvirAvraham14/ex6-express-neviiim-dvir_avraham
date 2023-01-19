@@ -24,7 +24,7 @@ router.post("/addComment", (req,res,next) => {
     const {pic_date, comment} = req.body;
     const user_id = req.session.log;
     if (!comment || comment.trim().length === 0 || comment.length > 128)
-        return next(createError(400, "Your comment now allowed!"));
+        return next(createError(400, "Your comment not allowed!"));
     if (new Date(pic_date) == "Invalid Date")
         return next(createError(400, "Invalid date format"));
 

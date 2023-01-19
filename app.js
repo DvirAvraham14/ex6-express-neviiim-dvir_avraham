@@ -24,13 +24,31 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Enable sessions
+// enable database session store
+const Sequelize = require('sequelize')
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
+const sequelize = new Sequelize({
+  "dialect": "sqlite",
+  "storage": "./session.sqlite"
+});
+
+
+const myStore = new SequelizeStore({
+  db: sequelize
+})
+
+
+// enable sessions
 app.use(session({
-  secret: "somesecretkey",
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 10 * 60 * 1000 }
+  secret:"somesecretkey",
+  store:myStore,
+  resave: false, // Force save of session for each request
+  saveUninitialized: false, // Save a session that is new, but has not been modified
+  cookie: {maxAge: 10*60*1000 } // milliseconds!
 }));
+
+myStore.sync();
 
 // Set cache control headers
 app.use((req, res, next) => {

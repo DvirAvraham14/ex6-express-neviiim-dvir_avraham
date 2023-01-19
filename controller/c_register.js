@@ -146,7 +146,7 @@ exports.postStepTwo = async (req, res, next) => {
                 func.set_error(res, false, err.message);
                 res.redirect("/register")
             }else
-                next(createError(401, e))
+                next(createError(401, err))
         }
     }
 }
