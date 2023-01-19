@@ -90,7 +90,7 @@ router.post('/comments/del/', function(req, res, next){
                 db.Comment.destroy({where: {id:req.body.todel}})
                     .then(() => {
                         //if success remove the comment's card from the frontend
-                        res.status(200)
+                        res.status(204).end()
                     })
                     .catch((err) => {
                         next(createError(401, err))

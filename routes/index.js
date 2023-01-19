@@ -13,16 +13,24 @@ router.get('/', function(req, res, next) {
 
 /* GET home page. */
 router.get('/logout/', function(req, res, next) {
-    if(req.session.log)
-       delete req.session.log
+    if(req.session.log) {
+        delete req.session.log
+        delete req.session.loginName
+    }
     res.redirect('/');
 });
 
 router.post("/addComment", (req,res,next) => {
     const {pic_date, comment} = req.body;
     const user_id = req.session.log;
+    if (!comment || comment.trim().length === 0 || comment.length > 128)
+        return next(createError(400, "Your comment now allowed!"));
+    if (new Date(pic_date) == "Invalid Date")
+        return next(createError(400, "Invalid date format"));
+
+
     db.Comment.create({user_id : user_id, comment: comment, pic_date: pic_date}).then((r) => {
-        console.log("Success")
+        res.status(204).end()
     }).catch(e =>  next(createError(401, e))
     )
 })
