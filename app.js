@@ -66,6 +66,11 @@ app.use((req, res, next) => {
     res.redirect('/login');
     return;
   }
+  if (req.session.log && /^\/(login|register)[/a-z]*/.test(req.path)) {
+    res.redirect('/');
+    return;
+  }
+
   next();
 });
 
