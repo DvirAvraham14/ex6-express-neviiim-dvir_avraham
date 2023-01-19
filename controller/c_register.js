@@ -7,7 +7,7 @@ const saltRounds = 10;
 
 exports.renderHome = (req, res, next) => {
     try {
-        const formData = req.cookies.formData ? req.cookies.formData : {};;
+        const formData = req.cookies.formData ? req.cookies.formData : {};
         res.render("register", {
             title: "register step one",
             formData,
@@ -22,6 +22,7 @@ exports.renderHome = (req, res, next) => {
  * @function postStepOne
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
+ * @param {Object} next - Express next function
  *
  * @description This function handles the form submission for step one of the registration process
  */
@@ -62,14 +63,10 @@ exports.getStepTwo = (req, res, next) => {
  * @description This function retrieves form data from cookies and returns it
  */
 const handleFormData = (req, res) => {
-    let formData = {};
     if(!req.cookies.formData){
         func.set_error(res, false, "Your session expired");
         res.redirect('/register/');
-    } else {
-        formData = req.cookies.formData;
     }
-    return formData;
 }
 
 /**
@@ -127,11 +124,12 @@ const createUser = async (req, res) => {
  * @function postStepTwo
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
+ * @param {Object} next - Express next function
  *
  * @description This function handles the form submission for step two of the registration process
  */
 exports.postStepTwo = async (req, res, next) => {
-    const formData = handleFormData(req, res);
+    handleFormData(req, res);
     const isPassValid = handlePasswords(req, res);
     const isFieldsValid = handleEmptyFields(req, res);
 
