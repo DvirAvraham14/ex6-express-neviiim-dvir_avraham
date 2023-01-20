@@ -49,6 +49,8 @@
             const imgDate = elem.target.id;
             connectDataBase.getCom(imgDate);
             fetch(`${api_url}?api_key=${api_key}&date=${imgDate}`).then(function (response){
+                if (!response.ok)
+                    return response.text().then(error => { throw new Error(`${error}`) });
                 return response.json()
             }).then(function (data){
                 document.getElementById("modal-sub").innerHTML = `${data["title"]} <i>${data["date"]}</i>`
@@ -111,18 +113,18 @@
             document.getElementById("loader").classList.remove("d-none")
             fetch(`${api_url}?api_key=${api_key}&start_date=${start_date}&end_date=${end_date}`)
                 .then(function (response){
+                    if (!response.ok)
+                        return response.text().then(error => { throw new Error(`${error}`) });
                     return response.json();
                 })
                 .then(function (data) {
-                    if(data["code"] >= 300)
-                        throw new Error(`code ${data['code']}, Error: ${data['msg']}`)
                     data = createHtml(data);
                     document.getElementById("main-data").innerHTML += data;
                     document.querySelectorAll(".comments").forEach((item) => {
                         item.addEventListener("click", loadModal);
                     });
                 }).catch(function (e) {
-                document.getElementById("main-data").innerHTML = e;
+                document.getElementById("main-data").innerHTML = e ;
             }).finally(function () {
                 document.getElementById("loader").classList.add("d-none")
             });
